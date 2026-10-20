@@ -1,0 +1,4 @@
+.venv/
+.numba_cache/
+__pycache__/
+prototype/stages/check_*.png

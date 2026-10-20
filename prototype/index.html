@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photo to ASCII</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0b0b0b;
+    --paper: #ffffff;
+    --muted: #707070;
+    --rule: #d6d6d6;
+    --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--paper); color: var(--ink); }
+  body { font: 14px/1.6 var(--mono); }
+  main { max-width: 1120px; margin: 0 auto; padding: 40px 16px 96px; }
+
+  .prompt { color: var(--muted); margin: 0; }
+  .prompt b { color: var(--ink); font-weight: 400; }
+  h1 { font-size: clamp(26px, 4vw, 44px); line-height: 1.1; letter-spacing: -0.02em; margin: 14px 0 10px; }
+  .lede { max-width: 64ch; color: var(--muted); margin: 0 0 44px; }
+
+  /* A box with its label sitting on the top rule, like ┌─ 01 ─┐ */
+  .box { position: relative; border: 1px solid var(--ink); padding: 22px 14px 14px; }
+  .box > .label {
+    position: absolute; top: -0.8em; left: 10px; padding: 0 6px;
+    background: var(--paper); font-weight: 700; white-space: nowrap;
+  }
+
+  .steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px 18px; }
+  @media (max-width: 880px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .frame { aspect-ratio: 3 / 4; display: grid; place-items: center; overflow: hidden; }
+  .frame img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .frame pre { margin: 0; line-height: 1; letter-spacing: 0; white-space: pre; color: var(--ink); font-weight: 700; }
+  .step p { margin: 12px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.55; }
+
+  .live { margin-top: 64px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-bottom: 18px; }
+  .group { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .group > span { color: var(--muted); margin-right: 6px; }
+  .bar button {
+    font: inherit; color: var(--ink); background: none; border: 0; cursor: pointer;
+    padding: 2px 6px;
+  }
+  .bar button::before { content: "[ "; color: var(--muted); }
+  .bar button::after { content: " ]"; color: var(--muted); }
+  .bar button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  .bar button[aria-pressed="true"]::before,
+  .bar button[aria-pressed="true"]::after { color: var(--paper); }
+  .bar button:focus-visible { outline: 1px dashed var(--ink); outline-offset: 2px; }
+
+  .stage { display: flex; justify-content: center; cursor: crosshair; }
+  canvas { display: block; touch-action: none; max-width: 100%; }
+  .hint { text-align: center; color: var(--muted); margin: 10px 0 0; }
+  .hint kbd { font: inherit; color: var(--ink); }
+</style>
+</head>
+<body>
+<main>
+  <p class="prompt">~/personal-website $ <b>./make_ascii mountains.jpg</b></p>
+  <h1>From photo to characters</h1>
+  <p class="lede">Four steps turn a photo into the portrait for the home page. The last one is live: move your cursor through it.</p>
+
+  <section class="steps" aria-label="How the portrait is made">
+    <div class="step">
+      <div class="box"><span class="label">01 original</span>
+        <div class="frame"><img src="stages/01_original.jpg" alt="The original photo"></div>
+      </div>
+      <p>The photo as you sent it.</p>
+    </div>
+    <div class="step">
+      <div class="box"><span class="label">02 cut out</span>
+        <div class="frame"><img src="stages/02_cutout.png" alt="The photo with the background removed"></div>
+      </div>
+      <p>A small AI model finds the person and removes everything else.</p>
+    </div>
+    <div class="step">
+      <div class="box"><span class="label">03 tone</span>
+        <div class="frame"><img src="stages/03_tone.png" alt="Cropped to head and shoulders in greyscale"></div>
+      </div>
+      <p>Cropped to head and shoulders, turned grey, contrast pushed so the face separates from the jacket.</p>
+    </div>
+    <div class="step">
+      <div class="box"><span class="label">04 characters</span>
+        <div class="frame"><pre id="still" aria-label="The portrait drawn in characters"></pre></div>
+      </div>
+      <p>The image is cut into a grid. Each cell becomes one character: darker cell, denser character.</p>
+    </div>
+  </section>
+
+  <section class="live" aria-label="Live portrait">
+    <div class="box"><span class="label">05 live</span>
+      <div class="bar">
+        <div class="group" role="group" aria-label="Density">
+          <span>density</span>
+          <button type="button" data-density="coarse">coarse</button>
+          <button type="button" data-density="medium">medium</button>
+          <button type="button" data-density="fine">fine</button>
+        </div>
+        <div class="group" role="group" aria-label="Style">
+          <span>style</span>
+          <button type="button" data-style="tone">shading</button>
+          <button type="button" data-style="edges">shading + outlines</button>
+        </div>
+      </div>
+      <div class="stage"><canvas id="live" role="img" aria-label="Portrait drawn in characters that scatter away from the cursor"></canvas></div>
+      <p class="hint">move through it &middot; <kbd>click</kbd> to knock it over</p>
+    </div>
+  </section>
+</main>
+
+<script src="portrait.js"></script>
+<script>
+(() => {
+  const P = window.PORTRAIT;
+  const INK = "#0b0b0b";
+  const FAMILY = '"JetBrains Mono", Consolas, monospace';
+  const SCRAMBLE = "!#$%&*+=?/\\|<>{}[]~^01";
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const narrow = () => window.innerWidth < 640;
+
+  // Fine is the only grid where the face reads on a laptop; on a phone it
+  // would make each character about 2px, so phones start coarse.
+  const state = { density: narrow() ? "coarse" : "fine", style: "tone" };
+
+  // Width of one character as a fraction of the font size. Measured rather
+  // than assumed, so a fallback font still lines its rows up with the grid.
+  let advance = 0.6;
+  function measureAdvance() {
+    const m = document.createElement("canvas").getContext("2d");
+    m.font = `700 100px ${FAMILY}`;
+    advance = m.measureText("M").width / 100;
+  }
+
+  // ---------- 04: the still ----------
+  function drawStill() {
+    const pre = document.getElementById("still");
+    const d = P.coarse;
+    pre.textContent = d.tone.join("\n");
+    const box = pre.parentElement.getBoundingClientRect();
+    pre.style.fontSize = Math.min(box.width / (d.cols * advance), box.height / d.rows) + "px";
+  }
+
+  // ---------- 05: the live portrait ----------
+  //
+  // Characters at rest are drawn a whole row per fillText call (about 90
+  // calls). Only characters that are out of place are drawn one by one, so
+  // the cost follows how many are moving, not how many there are.
+  const canvas = document.getElementById("live");
+  const ctx = canvas.getContext("2d");
+
+  let rows, grid, rowText, dirty, nRows;
+  let n = 0, pr, pc, hx, hy, x, y, vx, vy, home, scr, moving, appear, settle;
+  let cellW, cellH, fontSize, dpr, W, H, PAD, offX;
+  let atlas, aw, ah, glyphIndex, scrambleGlyph;
+  let introStart = 0, introEnd = 0, frame = 0, raf = 0;
+  const pointer = { x: -1e4, y: -1e4, vx: 0, vy: 0, inside: false };
+
+  function buildAtlas(chars) {
+    aw = Math.ceil(cellW * dpr) + 4;
+    ah = Math.ceil(cellH * dpr) + 4;
+    atlas = document.createElement("canvas");
+    atlas.width = aw * chars.length;
+    atlas.height = ah;
+    const a = atlas.getContext("2d");
+    // Bold: at 7-8px a regular stroke antialiases to grey and the face washes out.
+    a.font = `700 ${fontSize * dpr}px ${FAMILY}`;
+    a.textAlign = "center";
+    a.textBaseline = "middle";
+    a.fillStyle = INK;
+    chars.forEach((c, i) => a.fillText(c, i * aw + aw / 2, ah / 2));
+    glyphIndex = new Map(chars.map((c, i) => [c, i]));
+    scrambleGlyph = [...SCRAMBLE].map(c => glyphIndex.get(c));
+  }
+
+  function build(introMs) {
+    const d = P[state.density];
+    rows = d[state.style];
+    nRows = d.rows;
+    const stageW = canvas.parentElement.getBoundingClientRect().width;
+    const maxH = Math.min(window.innerHeight * 0.92, 1000);
+    PAD = narrow() ? 16 : 32;  // room around the portrait for characters to fly into
+    fontSize = Math.min((stageW - PAD * 2) / (d.cols * advance), (maxH - PAD * 2) / nRows);
+    cellW = fontSize * advance;
+    cellH = fontSize;
+    W = Math.floor(stageW);
+    H = Math.ceil(nRows * cellH + PAD * 2);
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    canvas.style.width = W + "px";
+    canvas.style.height = H + "px";
+    offX = (W - d.cols * cellW) / 2;
+
+    buildAtlas([...new Set(rows.join("") + SCRAMBLE)].filter(c => c !== " "));
+
+    grid = rows.map(r => [...r]);
+    rowText = rows.slice();
+    dirty = new Uint8Array(nRows);
+
+    n = 0;
+    for (const r of rows) for (const c of r) if (c !== " ") n++;
+    pr = new Uint16Array(n); pc = new Uint16Array(n);
+    hx = new Float32Array(n); hy = new Float32Array(n);
+    x = new Float32Array(n); y = new Float32Array(n);
+    vx = new Float32Array(n); vy = new Float32Array(n);
+    home = new Uint8Array(n); scr = new Uint8Array(n); moving = new Uint8Array(n);
+    appear = new Float32Array(n); settle = new Float32Array(n);
+
+    const ms = reduceMotion ? 0 : introMs;
+    let i = 0;
+    rows.forEach((row, r) => {
+      for (let c = 0; c < row.length; c++) {
+        if (row[c] === " ") continue;
+        pr[i] = r; pc[i] = c;
+        hx[i] = x[i] = offX + (c + 0.5) * cellW;
+        hy[i] = y[i] = PAD + (r + 0.5) * cellH;
+        home[i] = glyphIndex.get(row[c]);
+        scr[i] = (Math.random() * SCRAMBLE.length) | 0;
+        // The intro decodes top to bottom: each cell turns up as noise,
+        // then resolves into its real character a moment later.
+        appear[i] = (r / nRows) * ms * 0.55 + Math.random() * ms * 0.2;
+        settle[i] = appear[i] + ms * 0.08 + Math.random() * ms * 0.25;
+        i++;
+      }
+    });
+    introStart = performance.now();
+    introEnd = introStart + ms;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    render(introStart);
+    wake();
+  }
+
+  function step() {
+    const R = Math.max(56, cellW * 13);
+    const R2 = R * R;
+    const near = pointer.inside;
+    let count = 0;
+    for (let i = 0; i < n; i++) {
+      if (near) {
+        const dx = x[i] - pointer.x, dy = y[i] - pointer.y;
+        const d2 = dx * dx + dy * dy;
+        if (d2 < R2) {
+          const d = Math.sqrt(d2) || 1;
+          const f = 1 - d / R;
+          const push = f * f * 2.4;
+          // Pushed away from the cursor, and dragged a little along its path,
+          // so a fast swipe smears the face instead of just denting it.
+          vx[i] += (dx / d) * push + pointer.vx * f * 0.06;
+          vy[i] += (dy / d) * push + pointer.vy * f * 0.06;
+        }
+      }
+      if (!moving[i] && vx[i] === 0 && vy[i] === 0) continue;
+      vx[i] = (vx[i] + (hx[i] - x[i]) * 0.05) * 0.87;
+      vy[i] = (vy[i] + (hy[i] - y[i]) * 0.05) * 0.87;
+      x[i] += vx[i];
+      y[i] += vy[i];
+      const off = Math.abs(x[i] - hx[i]) + Math.abs(y[i] - hy[i]);
+      if (off < 0.3 && Math.abs(vx[i]) + Math.abs(vy[i]) < 0.05) {
+        x[i] = hx[i]; y[i] = hy[i]; vx[i] = vy[i] = 0;
+        if (moving[i]) { moving[i] = 0; dirty[pr[i]] = 1; }
+      } else {
+        if (!moving[i]) { moving[i] = 1; dirty[pr[i]] = 1; }
+        count++;
+      }
+    }
+    pointer.vx *= 0.8;
+    pointer.vy *= 0.8;
+    frame++;
+    return count;
+  }
+
+  function render(now) {
+    const t = now - introStart;
+    const intro = now < introEnd;
+    // Out of place, a character loses its identity and flickers; it gets its
+    // real glyph back once it is home.
+    if (frame % 4 === 0) for (let i = 0; i < n; i++) if (moving[i] || intro) scr[i] = (Math.random() * SCRAMBLE.length) | 0;
+
+    for (let i = 0; i < n; i++) {
+      let ch;
+      if (moving[i]) ch = " ";
+      else if (intro && t < appear[i]) ch = " ";
+      else if (intro && t < settle[i]) ch = SCRAMBLE[scr[i]];
+      else ch = rows[pr[i]][pc[i]];
+      if (grid[pr[i]][pc[i]] !== ch) { grid[pr[i]][pc[i]] = ch; dirty[pr[i]] = 1; }
+    }
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.font = `700 ${fontSize}px ${FAMILY}`;
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = INK;
+    for (let r = 0; r < nRows; r++) {
+      if (dirty[r]) { rowText[r] = grid[r].join(""); dirty[r] = 0; }
+      ctx.fillText(rowText[r], offX, PAD + (r + 0.5) * cellH);
+    }
+
+    const gw = aw / dpr, gh = ah / dpr;
+    for (let i = 0; i < n; i++) {
+      if (!moving[i]) continue;
+      const far = Math.abs(x[i] - hx[i]) + Math.abs(y[i] - hy[i]) > cellW * 0.8;
+      const g = far ? scrambleGlyph[scr[i]] : home[i];
+      ctx.drawImage(atlas, g * aw, 0, aw, ah, x[i] - gw / 2, y[i] - gh / 2, gw, gh);
+    }
+  }
+
+  function tick(now) {
+    const count = step();
+    render(now);
+    // Sleep once everything is home, the intro is done and nobody is touching it.
+    if (!pointer.inside && count === 0 && now >= introEnd) { raf = 0; return; }
+    raf = requestAnimationFrame(tick);
+  }
+
+  function wake() {
+    if (!reduceMotion && !raf) raf = requestAnimationFrame(tick);
+  }
+
+  function local(e) {
+    const r = canvas.getBoundingClientRect();
+    return [e.clientX - r.left, e.clientY - r.top];
+  }
+
+  if (!reduceMotion) {
+    canvas.addEventListener("pointermove", e => {
+      const [px, py] = local(e);
+      if (pointer.inside) { pointer.vx = px - pointer.x; pointer.vy = py - pointer.y; }
+      pointer.x = px; pointer.y = py; pointer.inside = true;
+      wake();
+    });
+    canvas.addEventListener("pointerleave", () => { pointer.inside = false; pointer.x = pointer.y = -1e4; });
+    canvas.addEventListener("pointerdown", e => {
+      const [px, py] = local(e);
+      const reach = Math.max(W, H) * 0.35;
+      for (let i = 0; i < n; i++) {
+        const dx = x[i] - px, dy = y[i] - py;
+        const d = Math.hypot(dx, dy) || 1;
+        if (d > reach) continue;
+        const kick = (1 - d / reach) * 24;
+        vx[i] += (dx / d) * kick;
+        vy[i] += (dy / d) * kick - Math.random() * 4;
+      }
+      wake();
+    });
+  }
+
+  // ---------- controls ----------
+  function syncButtons() {
+    document.querySelectorAll("[data-density]").forEach(b => b.setAttribute("aria-pressed", b.dataset.density === state.density));
+    document.querySelectorAll("[data-style]").forEach(b => b.setAttribute("aria-pressed", b.dataset.style === state.style));
+  }
+  document.querySelectorAll("[data-density]").forEach(b => b.addEventListener("click", () => {
+    state.density = b.dataset.density; syncButtons(); build(1200);
+  }));
+  document.querySelectorAll("[data-style]").forEach(b => b.addEventListener("click", () => {
+    state.style = b.dataset.style; syncButtons(); build(700);
+  }));
+
+  let resizeTimer = 0;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { drawStill(); build(0); }, 150);
+  });
+
+  // The atlas and the row text both bake the font in, so wait for it first.
+  const ready = document.fonts
+    ? Promise.all([document.fonts.load(`16px "JetBrains Mono"`), document.fonts.load(`700 16px "JetBrains Mono"`)]).catch(() => {})
+    : Promise.resolve();
+  ready.then(() => {
+    measureAdvance();
+    syncButtons();
+    drawStill();
+    build(1800);
+  });
+})();
+</script>
+</body>
+</html>

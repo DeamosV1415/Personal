@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<title>Chinmay Bhadoria · Co-founder, Zextiria AI</title>
+<meta name="description" content="Chinmay Bhadoria is a co-founder of Zextiria AI, the company behind Zextiria Rooms, AgentinFlow and GitNomad. Writes the code and designs the screens.">
+<meta name="author" content="Chinmay Bhadoria">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<!-- TODO(domain): add <link rel="canonical"> and make og:image / og:url absolute once the domain is chosen. -->
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Chinmay Bhadoria">
+<meta property="og:description" content="Co-founder of Zextiria AI. Writes the code and designs the screens.">
+<meta property="og:image" content="og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="profile:first_name" content="Chinmay">
+<meta property="profile:last_name" content="Bhadoria">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Chinmay Bhadoria",
+  "jobTitle": "Co-founder",
+  "worksFor": {
+    "@type": "Organization",
+    "@id": "https://www.zextiriaai.com/#organization",
+    "name": "Zextiria AI",
+    "url": "https://www.zextiriaai.com/"
+  },
+  "address": { "@type": "PostalAddress", "addressLocality": "Gwalior", "addressCountry": "IN" },
+  "sameAs": [
+    "https://github.com/DeamosV1415",
+    "https://www.linkedin.com/in/deamosv/",
+    "https://x.com/deamosV"
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+</head>
+<!-- data-resume: set to the CV's path (e.g. "cv.pdf") once it exists; the terminal's `resume` command reads it. -->
+<body data-email="chinmaybhadoria1415@gmail.com" data-resume="">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="top-inner">
+    <a class="home" href="#top" aria-label="Chinmay Bhadoria, back to top"><span class="user">deamosV</span><span class="path">: ~$</span><span class="blink" aria-hidden="true">▌</span></a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#about">about</a>
+      <a href="#work">zextiria</a>
+      <a href="#projects">projects</a>
+      <a href="#contact">contact</a>
+    </nav>
+    <span class="meter" data-progress aria-hidden="true">[----------]   0%</span>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============ hero ============ -->
+  <section class="hero" id="top" aria-label="Introduction">
+    <div class="hero-text">
+      <p class="hello">hello, world. I'm</p>
+      <h1 class="name" data-decrypt>Chinmay<br>Bhadoria</h1>
+      <p class="role">Co-founder, <a href="https://www.zextiriaai.com">Zextiria&nbsp;AI</a></p>
+    </div>
+
+    <div class="portrait">
+      <!-- Stand-in portrait from an old photo until the real shoot; replace by
+           re-running pipeline/make_ascii.py, which rewrites js/portrait-data.js. -->
+      <div class="portrait-stage">
+        <canvas id="portrait" role="img" aria-label="Chinmay, drawn in text characters"></canvas>
+      </div>
+      <p class="portrait-hint" aria-hidden="true">
+        <span class="for-mouse">move through me &middot; click to knock me over</span>
+        <span class="for-touch">tap me to knock me over</span>
+      </p>
+    </div>
+
+    <div class="hero-side">
+      <p class="intro">I build AI products where the AI proposes and a person decides.</p>
+      <dl class="facts">
+        <div><dt>now</dt><dd>building <a href="https://rooms.zextiriaai.com">Zextiria Rooms</a></dd></div>
+        <div><dt>based</dt><dd>Gwalior, India</dd></div>
+        <div><dt>local</dt><dd data-clock>--:-- IST</dd></div>
+      </dl>
+      <p class="kbd-hint"><kbd>/</kbd> opens the terminal</p>
+    </div>
+  </section>
+
+  <!-- ============ terminal ============ -->
+  <section class="section section-term" aria-label="Terminal">
+    <div class="term box" id="terminal">
+      <span class="label">terminal</span>
+      <div class="term-bar"><span>visitor@deamosV: ~</span><span class="term-hint">type, or click a command</span></div>
+      <div class="term-screen">
+        <div class="term-out" role="log" aria-live="polite"></div>
+        <form class="term-line" autocomplete="off">
+          <label class="ps1" for="term-in">visitor@deamosV:~$</label>
+          <input class="term-in" id="term-in" type="text" spellcheck="false" autocapitalize="off" autocorrect="off" enterkeyhint="go">
+        </form>
+      </div>
+      <div class="term-chips" role="group" aria-label="Commands">
+        <button class="chip" type="button" data-cmd="help">help</button>
+        <button class="chip" type="button" data-cmd="about">about</button>
+        <button class="chip" type="button" data-cmd="zextiria">zextiria</button>
+        <button class="chip" type="button" data-cmd="projects">projects</button>
+        <button class="chip" type="button" data-cmd="contact">contact</button>
+        <button class="chip" type="button" data-cmd="resume">resume</button>
+        <button class="chip" type="button" data-cmd="clear">clear</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ about: the man page ============ -->
+  <section class="section" id="about">
+    <div class="section-head">
+      <p class="cmd"><span class="ps1">$</span> man chinmay</p>
+      <h2 data-decrypt>About</h2>
+    </div>
+
+    <article class="man box" aria-label="About Chinmay, written as a manual page">
+      <header class="man-top"><span>CHINMAY(1)</span><span class="man-title">Field Manual</span><span>CHINMAY(1)</span></header>
+
+      <section class="man-sec">
+        <h3>NAME</h3>
+        <p class="man-name">chinmay — co-founder of Zextiria AI; writes the code and designs the screens</p>
+      </section>
+
+      <section class="man-sec">
+        <h3>SYNOPSIS</h3>
+        <p><b>chinmay</b> [<u>--code</u>] [<u>--design</u>] [<u>--ship</u>] [<i>idea</i> ...]</p>
+      </section>
+
+      <section class="man-sec">
+        <h3>DESCRIPTION</h3>
+        <p data-term-summary><b>chinmay</b> is Chinmay Bhadoria, one of the three co-founders of Zextiria AI, with Aarv Singh Chauhan and Ayush Bhatt. Chinmay and Aarv write the code and design the products; Ayush works with the clients. Based in Gwalior, India, building full time alongside college.</p>
+        <p>It started at a hackathon. Only one of us had the paid AI subscription, so we could paste what the AI wrote, but we couldn't hand each other the agent.</p>
+        <p>Then came AgentinFlow, our own studio for web builds and automation. Every client got a scope document, but the decisions made later, on calls and in messages, were never written down. The client saw the final result; the decisions made along the way were lost.</p>
+        <p>Zextiria Rooms is the fix: project rooms where AI drafts and clients approve.</p>
+      </section>
+
+      <section class="man-sec">
+        <h3>OPTIONS</h3>
+        <dl>
+          <dt><u>--code</u></dt><dd>TypeScript, React, Python and FastAPI, on Postgres.</dd>
+          <dt><u>--design</u></dt><dd>Interfaces, from the first sketch to the last pixel.</dd>
+          <dt><u>--ship</u></dt><dd>Rooms and GitNomad are live, and AgentinFlow builds for clients.</dd>
+        </dl>
+      </section>
+
+      <section class="man-sec">
+        <h3>ENVIRONMENT</h3>
+        <dl>
+          <dt>LOCATION</dt><dd>Gwalior, India</dd>
+          <dt>TZ</dt><dd>Asia/Kolkata (UTC+5:30)</dd>
+          <dt>EDITOR</dt><dd>Claude Code, most days</dd>
+        </dl>
+      </section>
+
+      <section class="man-sec">
+        <h3>HISTORY</h3>
+        <dl>
+          <dt>Apr 2026</dt><dd>Zextiria AI opens.</dd>
+          <dt>Aug 2026</dt><dd>GitNomad reaches Google Play.</dd>
+          <dt>Sep 2026</dt><dd>Zextiria Rooms opens paid plans.</dd>
+        </dl>
+      </section>
+
+      <section class="man-sec">
+        <h3>BUGS</h3>
+        <!-- Draft line; Chinmay to confirm or replace. -->
+        <p>Says "one small change" and opens forty files.</p>
+      </section>
+
+      <section class="man-sec">
+        <h3>SEE ALSO</h3>
+        <p><a href="#rooms">rooms(1)</a>, <a href="#agentinflow">agentinflow(1)</a>, <a href="#gitnomad">gitnomad(1)</a>, <a href="#contact">contact(7)</a></p>
+      </section>
+
+      <footer class="man-foot"><span>Zextiria AI</span><span>October 2026</span><span>CHINMAY(1)</span></footer>
+    </article>
+  </section>
+
+  <!-- ============ work: Zextiria AI ============ -->
+  <!-- Product copy is word for word from Zextiria Web's src/data/products.ts.
+       Keep the two in step. -->
+  <section class="section" id="work">
+    <div class="section-head">
+      <p class="cmd"><span class="ps1">$</span> tree ~/zextiria-ai</p>
+      <h2 data-decrypt>Zextiria AI</h2>
+    </div>
+
+    <div class="work-intro">
+      <div>
+        <p class="lead">Co-founder, since April 2026. One company, three products. They share a way of working rather than a codebase.</p>
+        <p class="loop"><b>propose</b> <span aria-hidden="true">→</span> <b>approve</b> <span aria-hidden="true">→</span> <b>record</b></p>
+        <p class="muted">The AI does the work and puts up a change. A named person with the authority to say yes says yes, or does not. What was proposed, who approved it and when all stay visible afterwards.</p>
+        <p><a href="https://www.zextiriaai.com">zextiriaai.com <span aria-hidden="true">↗</span></a></p>
+      </div>
+      <div class="box tree-box">
+        <span class="label">tree</span>
+<pre class="tree">zextiria-ai/
+├── <a href="#rooms">rooms/</a>
+├── <a href="#agentinflow">agentinflow/</a>
+└── <a href="#gitnomad">gitnomad/</a>
+
+3 directories</pre>
+      </div>
+    </div>
+
+    <div class="products">
+      <article class="product" id="rooms">
+        <a class="shot-link" href="https://rooms.zextiriaai.com" tabindex="-1" aria-hidden="true">
+          <figure class="shot">
+            <img class="bw" src="img/work-rooms.png" width="520" height="325" alt="">
+            <canvas data-tone="img/work-rooms-tone.webp"></canvas>
+            <img class="color" src="img/work-rooms-color.webp" width="520" height="325" alt="" loading="lazy" decoding="async">
+          </figure>
+        </a>
+        <div class="product-body">
+          <p class="product-meta"><span class="idx">01</span> rooms.zextiriaai.com</p>
+          <h3 class="product-name">Zextiria Rooms</h3>
+          <p class="product-line">Multiplayer AI for teams that do not share an org.</p>
+          <p>A room holds one document, the people from both companies, and the agents each side brings. An agent proposes a change. A named person with the authority to accept it approves it, and the reasoning stays on the record. Guests arrive from a link with no account and no setup, which is the only way the invite actually gets used.</p>
+          <p>Agent owners connect the assistant they already run over MCP. Claude Code, Cursor, Codex and Gemini all speak it, and they bring their own context, tools and model costs with them.</p>
+          <a class="product-link" href="https://rooms.zextiriaai.com">Open Rooms <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+
+      <article class="product" id="agentinflow">
+        <a class="shot-link" href="https://www.agentinflow.com" tabindex="-1" aria-hidden="true">
+          <figure class="shot">
+            <img class="bw" src="img/work-agentinflow.png" width="520" height="325" alt="">
+            <canvas data-tone="img/work-agentinflow-tone.webp"></canvas>
+            <img class="color" src="img/work-agentinflow-color.webp" width="520" height="325" alt="" loading="lazy" decoding="async">
+          </figure>
+        </a>
+        <div class="product-body">
+          <p class="product-meta"><span class="idx">02</span> agentinflow.com</p>
+          <h3 class="product-name">AgentinFlow</h3>
+          <p class="product-line">We build what you ask.</p>
+          <p>An AI automation studio. Web and app builds, agents that take on the repetitive work a team keeps doing by hand, and n8n workflows that move data between the tools a business already runs.</p>
+          <a class="product-link" href="https://www.agentinflow.com">See the work <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+
+      <article class="product" id="gitnomad">
+        <a class="shot-link" href="https://play.google.com/store/apps/details?id=dev.gitnomad.app" tabindex="-1" aria-hidden="true">
+          <figure class="shot">
+            <img class="bw" src="img/work-gitnomad.png" width="520" height="325" alt="">
+            <canvas data-tone="img/work-gitnomad-tone.webp"></canvas>
+            <img class="color" src="img/work-gitnomad-color.webp" width="520" height="325" alt="" loading="lazy" decoding="async">
+          </figure>
+        </a>
+        <div class="product-body">
+          <p class="product-meta"><span class="idx">03</span> Live on Google Play</p>
+          <h3 class="product-name">GitNomad</h3>
+          <p class="product-line">Code from your pocket.</p>
+          <p>A mobile editor tied to your real desktop project. Edit on your phone and the change lands on your computer as a git commit. The Android app is out on Google Play, and the VS Code extension that connects your desktop is live alongside it.</p>
+          <a class="product-link" href="https://play.google.com/store/apps/details?id=dev.gitnomad.app">Get it on Play <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ other projects ============ -->
+  <!-- Drafted from each repo's README; Chinmay to confirm which to show. -->
+  <section class="section" id="projects">
+    <div class="section-head">
+      <p class="cmd"><span class="ps1">$</span> ls -l ~/projects</p>
+      <h2 data-decrypt>Other projects</h2>
+    </div>
+
+    <p class="ls-head muted">total 3</p>
+    <ul class="ls">
+      <li class="project">
+        <span class="perm" aria-hidden="true">drwxr-xr-x</span>
+        <span class="project-year">2026</span>
+        <a class="project-name" href="https://github.com/DeamosV1415/Milk-Canister">chillcan/</a>
+        <span class="project-line">Is the milk still cold? A dashboard that watches Peltier-cooled milk cans, built for Smart India Hackathon.</span>
+        <span class="project-tag">github <span aria-hidden="true">↗</span></span>
+      </li>
+      <li class="project">
+        <span class="perm" aria-hidden="true">drwx------</span>
+        <span class="project-year">2026</span>
+        <span class="project-name">tachikiba/</span>
+        <span class="project-line">An AI CRM and follow-up engine for commercial real estate brokers.</span>
+        <span class="project-tag">private</span>
+      </li>
+      <li class="project">
+        <span class="perm" aria-hidden="true">drwx------</span>
+        <span class="project-year">2026</span>
+        <span class="project-name">yui/</span>
+        <span class="project-line">An AI character on a local 9B model. Her personality comes first; a voice and an avatar come next.</span>
+        <span class="project-tag">in progress</span>
+      </li>
+    </ul>
+    <p class="more"><a href="https://github.com/DeamosV1415">More on GitHub <span aria-hidden="true">↗</span></a></p>
+  </section>
+
+  <!-- ============ contact ============ -->
+  <section class="section" id="contact">
+    <div class="section-head">
+      <p class="cmd"><span class="ps1">$</span> cat contact.txt</p>
+      <h2 data-decrypt>Say hi</h2>
+    </div>
+    <p class="contact-say">Building something, hiring, or just want to talk about AI products? Email is the fastest way to reach me.</p>
+
+    <dl class="contact-list">
+      <div data-contact="email">
+        <dt>email</dt>
+        <dd><a href="mailto:chinmaybhadoria1415@gmail.com">chinmaybhadoria1415@gmail.com</a></dd>
+        <dd class="aside"><button class="chip" type="button" data-copy="chinmaybhadoria1415@gmail.com">copy</button></dd>
+      </div>
+      <div data-contact="github">
+        <dt>github</dt>
+        <dd><a href="https://github.com/DeamosV1415">github.com/DeamosV1415</a></dd>
+      </div>
+      <div data-contact="linkedin">
+        <dt>linkedin</dt>
+        <dd><a href="https://www.linkedin.com/in/deamosv/">linkedin.com/in/deamosv</a></dd>
+      </div>
+      <div data-contact="x">
+        <dt>x</dt>
+        <dd><a href="https://x.com/deamosV">x.com/deamosV</a></dd>
+      </div>
+      <div data-contact="company">
+        <dt>company</dt>
+        <dd><a href="https://www.zextiriaai.com">zextiriaai.com</a></dd>
+      </div>
+    </dl>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <span>&copy; <span data-year>2026</span> Chinmay Bhadoria</span>
+  <span>Made of plain text characters. Press <kbd>/</kbd> for the terminal.</span>
+  <a href="#top">↑ back to top</a>
+</footer>
+
+<script src="js/portrait-data.js"></script>
+<script src="js/portrait.js"></script>
+<script src="js/main.js"></script>
+<script src="js/terminal.js"></script>
+</body>
+</html>
