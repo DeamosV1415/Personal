@@ -6,6 +6,7 @@
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const SCRAMBLE = "!#$%&*+=?/\\|<>{}[]~^01";
   const EMAIL = document.body.dataset.email;
+  window.site = {};
 
   // Fires once per element, the first time it is mostly on screen.
   function onFirstView(nodes, fn, threshold = 0.5, rootMargin = "0px") {
@@ -30,15 +31,56 @@
       ]).catch(() => {})
     : Promise.resolve();
 
+  // The reactions (wave, nod, startled) are a megabyte or so per grid size,
+  // so only the grid actually drawn is fetched, and only once the page has
+  // finished loading. Until they arrive the portrait simply doesn't react.
+  const clipFiles = {};
+  function loadClips(density) {
+    if (clipFiles[density]) return clipFiles[density];
+    clipFiles[density] = new Promise(resolve => {
+      const s = document.createElement("script");
+      s.src = `js/portrait-clips-${density}.js`;
+      s.onload = () => { portrait.setClips(density, window.PORTRAIT_CLIPS); resolve(true); };
+      s.onerror = () => resolve(false);
+      document.head.append(s);
+    });
+    return clipFiles[density];
+  }
+  const pageLoaded = new Promise(r => (document.readyState === "complete" ? r() : window.addEventListener("load", r, { once: true })));
+
   fontsReady.then(() => {
     if (!canvas || !window.PORTRAIT) return;
+    // The grid size is chosen when the portrait first measures its box,
+    // which happens a moment after mount; nothing can ask for clips before.
+    let sized;
+    const firstSize = new Promise(r => (sized = r));
     portrait = AsciiPortrait.mount(canvas, window.PORTRAIT, {
       introMs: 1600,
       // Leave room for the header and the hint line, so the hero fits one screen.
       maxHeight: () => window.innerWidth >= 1024
         ? Math.min(window.innerHeight - 170, 820)
         : Math.min(window.innerWidth * 1.1, window.innerHeight * 0.62, 560),
+      onDensity: density => { sized(density); pageLoaded.then(() => loadClips(density)); },
     });
+    window.site.portrait = portrait;
+    if (reduceMotion) return;
+
+    // Hello: one wave, once the intro has resolved and the clips are here.
+    Promise.all([firstSize, pageLoaded])
+      .then(([density]) => loadClips(density))
+      .then(ok => {
+        if (!ok) return;
+        const wait = Math.max(0, portrait.introEnd() - performance.now()) + 500;
+        setTimeout(() => portrait.play("wave"), wait);
+      });
+
+    // Welcome back: a nod when the portrait comes back into view after
+    // you had scrolled away from it.
+    let away = false;
+    new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) { away = true; return; }
+      if (away) { away = false; portrait.play("nod"); }
+    }, { threshold: 0.5 }).observe(canvas);
   });
 
   // ---------- headings that decrypt ----------
@@ -234,7 +276,7 @@
     }, ms);
   }
 
-  window.site = { collapse };
+  window.site.collapse = collapse;
 
   // ---------- small things ----------
 

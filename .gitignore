@@ -2,3 +2,12 @@
 .numba_cache/
 __pycache__/
 prototype/stages/check_*.png
+.gstack/
+
+# Pipeline working files: cutouts and previews, regenerated on every run.
+photos/cut/
+photos/check/
+# The shoot originals (~85 MB). The site only needs the generated data in
+# site/js/; the originals stay on disk for re-running the pipeline.
+photos/raw/*
+!photos/raw/mountains.jpg

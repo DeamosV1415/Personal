@@ -2,7 +2,7 @@ r"""Draw the 1200x630 link preview (site/og.png) from the portrait data.
 
     .venv\Scripts\python.exe pipeline\make_og.py
 
-Run it after make_ascii.py, so the preview shows the current portrait.
+Run it after make_portrait.py, so the preview shows the current portrait.
 """
 
 import json
@@ -24,7 +24,7 @@ def font(weight: int, size: int) -> ImageFont.FreeTypeFont:
 def main() -> None:
     raw = (ROOT / "site" / "js" / "portrait-data.js").read_text(encoding="utf-8")
     data = json.loads(raw[raw.index("{") : raw.rindex("}") + 1])
-    rows = data["medium"]["tone"]
+    rows = data["densities"]["medium"]["frames"]["center"]
 
     img = Image.new("RGB", (W, H), "white")
     d = ImageDraw.Draw(img)

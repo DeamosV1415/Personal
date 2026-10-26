@@ -1,4 +1,7 @@
-r"""Turn a photo of a person into ASCII portrait data for the site.
+r"""Turn ONE photo into ASCII, for the explainer page in prototype/.
+
+The home page portrait is built by make_portrait.py from the whole shoot; this
+script only feeds prototype/ and lends make_portrait.py its helpers.
 
     .venv\Scripts\python.exe pipeline\make_ascii.py photos\raw\mountains.jpg
 
@@ -10,9 +13,8 @@ Writes, into prototype/:
     stages/02_cutout.png     background removed, on white
     stages/03_tone.png       cropped to head and shoulders, greyscale, contrast lifted
     portrait.js              window.PORTRAIT = { coarse|medium|fine: { tone, edges } }
-and the same data to site/js/portrait-data.js for the home page.
 
-Both pages read the data as a plain script so they also work opened straight from disk.
+The page reads the data as a plain script so it also works opened straight from disk.
 """
 
 import argparse
@@ -193,13 +195,7 @@ def main() -> None:
         preview(t, stages / f"check_{name}_tone.png")
         preview(e, stages / f"check_{name}_edges.png")
 
-    payload = "window.PORTRAIT = " + json.dumps(data) + ";\n"
-    (args.out / "portrait.js").write_text(payload, encoding="utf-8")
-    # The site reads the same data; writing it here means a new photo reaches
-    # the home page in one run.
-    site_data = Path(__file__).resolve().parent.parent / "site" / "js" / "portrait-data.js"
-    site_data.parent.mkdir(parents=True, exist_ok=True)
-    site_data.write_text(payload, encoding="utf-8")
+    (args.out / "portrait.js").write_text("window.PORTRAIT = " + json.dumps(data) + ";\n", encoding="utf-8")
     print({k: (v["cols"], v["rows"]) for k, v in data.items()})
 
 

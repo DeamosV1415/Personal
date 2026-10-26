@@ -118,7 +118,16 @@
     ["clear", "clear the screen"],
   ];
   // Offered by Tab, never listed. Finding them is the point.
-  const HIDDEN = ["whoami", "ls", "cd", "pwd", "date", "echo", "history", "sudo", "exit", "man"];
+  const HIDDEN = ["whoami", "ls", "cd", "pwd", "date", "echo", "history", "sudo", "exit", "man", "wave", "nod"];
+
+  // Scroll up to the portrait, then have it play a reaction.
+  async function react(name, line) {
+    const p = window.site?.portrait;
+    print(line);
+    jump("#top");
+    await wait(700);
+    if (!p?.play(name)) print(dim("(still loading, try again in a second)"));
+  }
 
   const commands = {
     help() {
@@ -203,6 +212,8 @@
       if (/contact/.test(arg || "")) return commands.contact();
       print(`cat: ${arg || ""}: No such file or directory`);
     },
+    async wave() { await react("wave", "Waving back at you ↑"); },
+    async nod() { await react("nod", "Nodding along ↑"); },
     exit() { print("There is no exit. Only the scroll bar."); },
     vim() { print("Not on this machine. You'd never get out."); },
     hello() { print("Hey! Type ", el("strong", { text: "help" }), " to see what I can do."); },
