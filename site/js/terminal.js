@@ -146,7 +146,7 @@
 
     zextiria() {
       const items = products();
-      print(el("strong", { text: "zextiria-ai/" }), dim("   co-founder, since April 2026"));
+      print(el("strong", { text: "zextiria-ai/" }), dim("   co-founder & CEO, since April 2026"));
       items.forEach((p, i) => {
         const branch = i === items.length - 1 ? "└── " : "├── ";
         cols([dim(branch), link(`${p.id}/`, p.href), gap(p.id.length + 1, 15)], p.line);
@@ -200,7 +200,7 @@
     },
     date() {
       const now = new Intl.DateTimeFormat("en-IN", { dateStyle: "full", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(new Date());
-      print(`${now} (Gwalior)`);
+      print(`${now} (India)`);
     },
     echo(arg) { print(arg || " "); },
     history() { past.forEach((c, i) => print(dim(String(i + 1).padStart(4) + "  "), c)); },

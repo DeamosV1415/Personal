@@ -152,7 +152,7 @@
     updateMeter();
   }
 
-  // ---------- local time in Gwalior ----------
+  // ---------- local time in India ----------
 
   const clocks = document.querySelectorAll("[data-clock]");
   const fmt = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" });

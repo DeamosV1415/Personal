@@ -41,7 +41,7 @@ def main() -> None:
     d.text((64, 150), "hello, world. I'm", font=font(400, 26), fill=MUTED)
     d.text((60, 192), "Chinmay", font=font(800, 92), fill=INK)
     d.text((60, 284), "Bhadoria", font=font(800, 92), fill=INK)
-    d.text((64, 410), "Co-founder, Zextiria AI", font=font(800, 28), fill=INK)
+    d.text((64, 410), "Co-founder & CEO, Zextiria AI", font=font(800, 28), fill=INK)
     d.text((64, 540), "deamosV: ~$ _", font=font(400, 22), fill=MUTED)
 
     out = ROOT / "site" / "og.png"
